@@ -1,0 +1,9 @@
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+
+{
+    "title": "koodarin maanantai",
+    "author": "ccelia",
+    "url": "https://opencollective.com/nodemon/donate2",
+    "likes": 202
+}
