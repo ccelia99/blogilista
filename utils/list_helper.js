@@ -39,9 +39,26 @@ const mostBlogs  = (blogs) => {
   return maxAuthor
 }
 
+const   mostLikes = (blogs) => {
+  const groupedArray =
+  _(blogs)
+    .groupBy('author')
+    .map((objs, key) => ({
+        'author': key,
+        'likes': _.sumBy(objs, 'likes') }))
+    .value()
+  console.log(groupedArray) 
+
+  const maxAuthor = _.maxBy(groupedArray, function(o) {return o.likes} )
+  console.log('maxAuthor', maxAuthor)
+  
+  return maxAuthor
+}
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikes
 }
