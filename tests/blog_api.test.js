@@ -73,6 +73,22 @@ test('a blog with undefined likes will be set as 0 likes', async () => {
   expect(likesValue).toBe(0)  
 })
 
+test('a blog without title and url is not added', async () => {
+  const newBlog = {
+    author: 'Edsger W. Dijkstra'
+  }
+
+  await api
+    .post('/api/notes')
+    .send(newBlog)
+    .expect(404)
+
+  const blogsAtEnd  = await helper.blogsInDb()
+
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+})
+
+
 afterAll(() => {
   mongoose.connection.close()
 })
