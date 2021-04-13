@@ -49,8 +49,13 @@ const initialBlogs = [
       likes: 2,
       __v: 0
     }  
-  ]
+]
 
-  module.exports = {
-    initialBlogs
-  }
+const blogsInDb = async () => {
+    const blogs = await Blog.find({})
+    return blogs.map(blog => blog.toJSON())
+}
+
+module.exports = {
+    initialBlogs, blogsInDb
+}
