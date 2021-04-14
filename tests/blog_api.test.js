@@ -75,9 +75,11 @@ describe('when there is initially some blogs saved', () => {
     expect(likesValue).toBe(0)  
   })
 
-  test('a blog without title and url is not added', async () => {
+  test('fails with statuscode 404 if title does not exist', async () => {
     const newBlog = {
-      author: 'Edsger W. Dijkstra'
+      author: 'Edsger W. Dijkstra',
+      url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+      likes: 5 
     }
 
     await api
@@ -90,6 +92,24 @@ describe('when there is initially some blogs saved', () => {
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
   })
 
+  test('fails with statuscode 404 if url does not exist', async () => {
+    const newBlog = {
+      title: 'async/await simplifies making async calls',
+      author: 'Edsger W. Dijkstra',
+      likes: 5 
+    }
+
+    await api
+      .post('/api/notes')
+      .send(newBlog)
+      .expect(404)
+
+    const blogsAtEnd  = await helper.blogsInDb()
+
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+  })
+
+  
   describe('deletion of a blog', () => {
     test('succeeds with status code 204 if id is valid', async () => {
         const blogsAtStart = await helper.blogsInDb()
