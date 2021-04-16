@@ -1,9 +1,10 @@
 POST http://localhost:3001/api/blogs
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNlcmphIiwiaWQiOiI2MDc5OGM1Mzc0ZmVhMTBiNTA4MmY2NGYiLCJpYXQiOjE2MTg1Nzk5NDR9.i2qg1MHteB3Nxb66ZFlvRx0Q277UMQYjZNd43LH3oIU
 
 {
-    "title": "koodarin maanantai",
+    "title": "lisaa blogiloita",
     "author": "ccelia",
-    "url": "https://opencollective.com/nodemon/donate2",
-    "likes": 202
+    "url": "https://opencollective.com/nodemon/donate2"
+    
 }
