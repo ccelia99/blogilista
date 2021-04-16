@@ -1,10 +1,12 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
-const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
+const bcrypt = require('bcrypt')
 
-const Blog = require('../models/note')
+const Blog = require('../models/blog')
+const User = require('../models/user')
+const helper = require('./test_helper')
 
 describe('when there is initially some blogs saved', () => {
   beforeEach(async () => {
@@ -75,34 +77,36 @@ describe('when there is initially some blogs saved', () => {
     expect(likesValue).toBe(0)  
   })
 
-  test('fails with statuscode 404 if title does not exist', async () => {
+  test('fails with statuscode 400 if title does not exist', async () => {
     const newBlog = {
       author: 'Edsger W. Dijkstra',
       url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-      likes: 5 
+      likes: 5,
+      user: 'saalto'
     }
 
     await api
-      .post('/api/notes')
+      .post('/api/blogs')
       .send(newBlog)
-      .expect(404)
+      .expect(400)
 
     const blogsAtEnd  = await helper.blogsInDb()
 
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
   })
 
-  test('fails with statuscode 404 if url does not exist', async () => {
+  test('fails with statuscode 400 if url does not exist', async () => {
     const newBlog = {
       title: 'async/await simplifies making async calls',
       author: 'Edsger W. Dijkstra',
-      likes: 5 
+      likes: 5,
+      user: 'saalto'
     }
 
     await api
-      .post('/api/notes')
+      .post('/api/blogs')
       .send(newBlog)
-      .expect(404)
+      .expect(400)
 
     const blogsAtEnd  = await helper.blogsInDb()
 
@@ -129,6 +133,60 @@ describe('when there is initially some blogs saved', () => {
     
         expect(titles).not.toContain(blogToDelete.title)
     })
+  })
+})
+
+describe('when there is initially one user at db', () => {
+  beforeEach(async () => {
+    await User.deleteMany({})
+
+    const passwordHash = await bcrypt.hash('sekret', 10)
+    const user = new User({ username: 'root', name: 'Superuser', passwordHash })
+
+    await user.save()
+  })
+
+  test('creation succeeds with a fresh username', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username: 'mluukkai',
+      name: 'Matti Luukkainen',
+      password: 'salainen',
+    }
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length + 1)
+
+    const usernames = usersAtEnd.map(u => u.username)
+    expect(usernames).toContain(newUser.username)
+  })
+
+  test('creation fails with proper statuscode and message if username already taken', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username: 'root',
+      name: 'Superuser',
+      password: 'salainen',
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    expect(result.body.error).toContain('`username` to be unique')
+
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length)
   })
 })
 
