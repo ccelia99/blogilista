@@ -1,5 +1,13 @@
 const logger = require('./logger')
 
+const tokenExtractor = (request, response, next) => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    request.token = authorization.substring(7)    
+  }
+  next() 
+}
+
 const morgan = require('morgan')
 morgan.token('body', function (req) {
   return JSON.stringify(req.body)
@@ -19,6 +27,7 @@ const errorHandler = (error, request, response, next) => {
         error: 'invalid token'
       })
     }
+}
   
 const unknownEndpoint = (request, response) => {
     response.status(404).send({ error: 'unknown endpoint' })
@@ -26,6 +35,7 @@ const unknownEndpoint = (request, response) => {
 
 module.exports = {
     morgan,
+    tokenExtractor,
     unknownEndpoint,
     errorHandler
   }

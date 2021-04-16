@@ -1,10 +1,8 @@
 POST http://localhost:3001/api/blogs
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNlcmphIiwiaWQiOiI2MDc5OGM1Mzc0ZmVhMTBiNTA4MmY2NGYiLCJpYXQiOjE2MTg1Nzk5NDR9.i2qg1MHteB3Nxb66ZFlvRx0Q277UMQYjZNd43LH3oIU
-
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNlcmphIiwiaWQiOiI2MDc5OGM1Mzc0ZmVhMTBiNTA4MmY2NGYiLCJpYXQiOjE2MTg2MDMxMjJ9.xG5qxQ8o5Se68DnlTrFsuvb7yYhmU-PBiwVaIotT1qg
 {
-    "title": "lisaa blogiloita",
+    "title": "onnistuiko",
     "author": "ccelia",
     "url": "https://opencollective.com/nodemon/donate2"
-    
 }
