@@ -32,7 +32,7 @@ describe('when there is initially some blogs saved', () => {
     response.forEach(item => expect(item.id).toBeDefined())
   })
 
-  describe('addition of a new blog', () => {
+  /*describe('addition of a new blog', () => {
     test('succeeds with valid data ', async () => {
       const newBlog = {
         title: 'async/await simplifies making async calls',
@@ -133,7 +133,7 @@ describe('when there is initially some blogs saved', () => {
     
         expect(titles).not.toContain(blogToDelete.title)
     })
-  })
+  })*/
 })
 
 describe('when there is initially one user at db', () => {
@@ -188,6 +188,29 @@ describe('when there is initially one user at db', () => {
     const usersAtEnd = await helper.usersInDb()
     expect(usersAtEnd).toHaveLength(usersAtStart.length)
   })
+
+  test('creation fails with proper statuscode and message if username is too short', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username: 'r',
+      name: 'Jokujuuseri',
+      password: 'salainen',
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    expect(result.body.error).toContain("User validation failed: username:")
+
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length)
+  })
+
+  
 })
 
 
