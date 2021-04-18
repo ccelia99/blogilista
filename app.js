@@ -26,9 +26,12 @@ app.use(express.json())
 
 
 app.use(middleware.morgan(':method :url :status :res[content-length] - :response-time ms :body'))
-app.use(middleware.tokenExtractor)
 
-app.use('/api/blogs', blogsRouter)
+
+//app.use(middleware.tokenExtractor)
+//app.use(userExtractor) 
+
+app.use('/api/blogs', middleware.userExtractor, blogsRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
 
