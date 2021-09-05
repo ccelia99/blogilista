@@ -1,4 +1,4 @@
-const blogsRouter = require('express').blogsRouter()
+const blogsRouter = require('express').Router()
 const jwt = require('jsonwebtoken')
 const Blog = require('../models/blog')
 const User = require('../models/user')
@@ -8,7 +8,16 @@ blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog
     .find({}).populate('user', { username: 1, name: 1 })
 
-  response.json(blogs)
+  response.json(blogs.map(blog => blog.toJSON()))
+})
+
+blogsRouter.get('/:id', async (request, response) => { 
+  const blog = await Blog.findById(request.params.id)
+  if (blog) {
+    response.json(blog.toJSON())
+  } else {
+    response.status(404).end()
+  }
 })
 
 blogsRouter.delete('/:id', async (request, response) => {
